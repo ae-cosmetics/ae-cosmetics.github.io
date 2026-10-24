@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A&E cosmetics | Cosmétiques de Luxe</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Polices Google Luxe -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .search-filter-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+        .search-box {
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 12px 20px 12px 45px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+        }
+        .search-box input:focus {
+            border-color: #c5a059;
+            box-shadow: 0 0 8px rgba(197, 160, 89, 0.3);
+        }
+        .search-box i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+        }
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        .filter-btn {
+            background: #f4f4f4;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .filter-btn.active, .filter-btn:hover {
+            background: #c5a059;
+            color: #fff;
+        }
+
+        /* Style pour le curseur et le modal de zoom des photos */
+        .product-img-box img {
+            cursor: pointer;
+        }
+        .image-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+        }
+        .image-modal.active {
+            display: flex;
+        }
+        .modal-content {
+            max-width: 90%;
+            max-height: 85vh;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            object-fit: contain;
+            animation: zoomIn 0.3s ease;
+        }
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .close-modal:hover {
+            color: #c5a059;
+        }
+        @keyframes zoomIn {
+            from { transform: scale(0.7); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Barre de Navigation avec Icône Panier -->
+    <nav class="navbar">
+        <div class="nav-logo">A&E cosmetics</div>
+        <div class="cart-icon-wrapper" onclick="toggleCart()">
+            <i class="fa-solid fa-bag-shopping"></i>
+            <span id="cart-count">0</span>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="overlay"></div>
+        <div class="hero-content">
+            <span class="badge">Nouvelle Arrivage 2026</span>
+            <h1>L'Éclat de la Beauté Pure</h1>
+            <p>Soins d'exception aux actifs précieux pour une peau éclatante et revitalisée.</p>
+            <a href="#produits" class="btn-primary">Découvrir la Collection</a>
+        </div>
+    </header>
+
+    <!-- Recherche et Filtres -->
+    <section class="search-filter-container">
+        <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="searchInput" placeholder="Rechercher un produit..." onkeyup="filterProducts()">
+        </div>
+        <div class="filter-buttons">
+            <button class="filter-btn active" onclick="filterCategory('all', this)">Tous</button>
+            <button class="filter-btn" onclick="filterCategory('eponges', this)">Éponges & Blenders</button>
+            <button class="filter-btn" onclick="filterCategory('accessoires', this)">Coffrets & Soins Visage</button>
+            <button class="filter-btn" onclick="filterCategory('rasage', this)">Rasage & Épilation</button>
+            <button class="filter-btn" onclick="filterCategory('ongles', this)">Mains & Pieds</button>
+            <button class="filter-btn" onclick="filterCategory('pinceaux', this)">Pinceaux Maquillage</button>
+            <button class="filter-btn" onclick="filterCategory('cheveux', this)">Brosses à Cheveux</button>
+        </div>
+    </section>
+
+    <!-- Grille des Produits -->
+    <section class="container" id="produits">
+        <h2 class="section-title">Nos Créations</h2>
+        <p class="section-subtitle">Catalogue complet 2026</p>
+
+        <div class="grid-products" id="productsGrid">
+
+            <!-- PAGE 2: Éponges & Blenders -->
+            <div class="product-card" data-category="eponges">
+                <div class="product-img-box"><img src="image_p2_2.png" alt="Magic Box 7in1" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Magic Box 7in1</h3>
+                    <p class="description">Réf: N4-9</p>
+                    <div class="product-bottom"><span class="price">7.80 DT</span><button class="btn-add-cart" onclick="addToCart('Magic Box 7in1 (N4-9)', 7.80)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="eponges">
+                <div class="product-img-box"><img src="image_p2_1.png" alt="Sweet Beauty 2pcs Eponge" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Sweet Beauty 2pcs Eponge</h3>
+                    <p class="description">Réf: N4-8</p>
+                    <div class="product-bottom"><span class="price">7.80 DT</span><button class="btn-add-cart" onclick="addToCart('Sweet Beauty 2pcs Eponge (N4-8)', 7.80)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="eponges">
+                <div class="product-img-box"><img src="image_p2_2 (2).png" alt="Magic Box 8in1" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Magic Box 8in1</h3>
+                    <p class="description">Réf: N4-10</p>
+                    <div class="product-bottom"><span class="price">7.80 DT</span><button class="btn-add-cart" onclick="addToCart('Magic Box 8in1 (N4-10)', 7.80)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="eponges">
+                <div class="product-img-box"><img src="image_p2_3.png" alt="Eponge Sweet Beauty" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Eponge Sweet Beauty</h3>
+                    <p class="description">Réf: N4-26</p>
+                    <div class="product-bottom"><span class="price">2.10 DT</span><button class="btn-add-cart" onclick="addToCart('Eponge Sweet Beauty (N4-26)', 2.10)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="eponges">
+                <div class="product-img-box"><img src="image_p2_5.jpg" alt="Eponge Lemon Beauty" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Eponge Lemon Beauty</h3>
+                    <p class="description">Réf: N9-10</p>
+                    <div class="product-bottom"><span class="price">2.10 DT</span><button class="btn-add-cart" onclick="addToCart('Eponge Lemon Beauty (N9-10)', 2.10)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="eponges">
+                <div class="product-img-box"><img src="image_p2_4.png" alt="Eponge PM 5pcs" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Eponge PM 5pcs BeautyBlender</h3>
+                    <p class="description">Réf: N9-9</p>
+                    <div class="product-bottom"><span class="price">4.20 DT</span><button class="btn-add-cart" onclick="addToCart('Eponge PM 5pcs (N9-9)', 4.20)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <!-- PAGE 3: Accessoires & Coffrets -->
+            <div class="product-card" data-category="accessoires">
+                <div class="product-img-box"><img src="image_p3_1.png" alt="Kiss Lovely Tools 4pcs" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Beauty Tools Kiss Beauty 4pcs</h3>
+                    <p class="description">Réf: N4-19</p>
+                    <div class="product-bottom"><span class="price">11.40 DT</span><button class="btn-add-cart" onclick="addToCart('Beauty Tools Kiss Beauty 4pcs (N4-19)', 11.40)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="accessoires">
+                <div class="product-img-box"><img src="image_p3_5.jpg" alt="Sweet Beauty 12pcs" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Sweet Beauty 12pcs Set</h3>
+                    <p class="description">Réf: N8-64</p>
+                    <div class="product-bottom"><span class="price">17.40 DT</span><button class="btn-add-cart" onclick="addToCart('Sweet Beauty 12pcs (N8-64)', 17.40)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="accessoires">
+                <div class="product-img-box"><img src="image_p3_2.jpg" alt="Sweet Beauty Tools" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Sweet Beauty Tools Set</h3>
+                    <p class="description">Réf: N4-18</p>
+                    <div class="product-bottom"><span class="price">22.20 DT</span><button class="btn-add-cart" onclick="addToCart('Sweet Beauty Tools (N4-18)', 22.20)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="accessoires">
+                <div class="product-img-box"><img src="image_p3_3.jpg" alt="Beauty Tools 16pcs" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Beauty Tools 16pcs</h3>
+                    <p class="description">Réf: N4-3</p>
+                    <div class="product-bottom"><span class="price">21.00 DT</span><button class="btn-add-cart" onclick="addToCart('Beauty Tools 16pcs (N4-3)', 21.00)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="accessoires">
+                <div class="product-img-box"><img src="image_p3_4.jpg" alt="Beauty Tools 16pcs Pink" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Beauty Tools 16pcs Pink</h3>
+                    <p class="description">Réf: N5-15</p>
+                    <div class="product-bottom"><span class="price">14.28 DT</span><button class="btn-add-cart" onclick="addToCart('Beauty Tools 16pcs (N5-15)', 14.28)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <!-- PAGE 4: Soins Visage & Massage -->
+            <div class="product-card" data-category="accessoires">
+                <div class="product-img-box"><img src="image_p4_1.png" alt="Love My Face 4pcs" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Love My Face 4pcs</h3>
+                    <p class="description">Réf: N9-15</p>
+                    <div class="product-bottom"><span class="price">10.20 DT</span><button class="btn-add-cart" onclick="addToCart('Love My Face 4pcs (N9-15)', 10.20)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="accessoires">
+                <div class="product-img-box"><img src="image_p3_6.jpg" alt="Brosse Gommage Silicone" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Brosse Gommage 100% Silicone</h3>
+                    <p class="description">Réf: N5-21</p>
+                    <div class="product-bottom"><span class="price">4.80 DT</span><button class="btn-add-cart" onclick="addToCart('Brosse Gommage (N5-21)', 4.80)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="accessoires">
+                <div class="product-img-box"><img src="image_p4_2.jpg" alt="Bande Cheveux" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Bandeau Cheveux Nœud</h3>
+                    <p class="description">Réf: N9-11</p>
+                    <div class="product-bottom"><span class="price">4.20 DT</span><button class="btn-add-cart" onclick="addToCart('Bande Cheveux (N9-11)', 4.20)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="accessoires">
+                <div class="product-img-box"><img src="image_p4_3.jpg" alt="Brosse Massage Cheveux" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Brosse Massage Cuir Chevelu</h3>
+                    <p class="description">Réf: N5-6</p>
+                    <div class="product-bottom"><span class="price">5.40 DT</span><button class="btn-add-cart" onclick="addToCart('Brosse Massage Cheveux (N5-6)', 5.40)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="accessoires">
+                <div class="product-img-box"><img src="image_p4_4.png" alt="Gua Sha Massage" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Gua Sha Pierre de Massage</h3>
+                    <p class="description">Réf: N4-13</p>
+                    <div class="product-bottom"><span class="price">4.20 DT</span><button class="btn-add-cart" onclick="addToCart('Gua Sha Massage (N4-13)', 4.20)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="accessoires">
+                <div class="product-img-box"><img src="image_p4_5.png" alt="Facial Massage Roller" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Rouleau de Massage Facial Jade</h3>
+                    <p class="description">Réf: N5-20</p>
+                    <div class="product-bottom"><span class="price">8.64 DT</span><button class="btn-add-cart" onclick="addToCart('Facial Massage Roller (N5-20)', 8.64)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <!-- PAGE 5 & 6: Rasage, Épilation & Cils -->
+            <div class="product-card" data-category="rasage">
+                <div class="product-img-box"><img src="image_p4_6.jpg" alt="Eyelash Curler" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Récourbe Cils Sweet Beauty</h3>
+                    <p class="description">Réf: N4-17</p>
+                    <div class="product-bottom"><span class="price">7.20 DT</span><button class="btn-add-cart" onclick="addToCart('Eyelash Curler (N4-17)', 7.20)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="rasage">
+                <div class="product-img-box"><img src="image_p5_1.jpg" alt="Eyelash Curler Mini Tiny" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Récourbe Cils Mini Tiny</h3>
+                    <p class="description">Réf: N9-13</p>
+                    <div class="product-bottom"><span class="price">7.20 DT</span><button class="btn-add-cart" onclick="addToCart('Eyelash Curler (N9-13)', 7.20)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="rasage">
+                <div class="product-img-box"><img src="image_p5_3.jpg" alt="Pince à Epiler Liangle" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Pince à Épiler Motif Fleur</h3>
+                    <p class="description">Réf: N5-13</p>
+                    <div class="product-bottom"><span class="price">4.20 DT</span><button class="btn-add-cart" onclick="addToCart('Pince a Epiler (N5-13)', 4.20)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="rasage">
+                <div class="product-img-box"><img src="image_p5_2.png" alt="Set Eyebrow Repair" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Kit Épilation Sourcils Sweet Beauty</h3>
+                    <p class="description">Réf: N8-16</p>
+                    <div class="product-bottom"><span class="price">6.96 DT</span><button class="btn-add-cart" onclick="addToCart('Pince Sourcil Set (N8-16)', 6.96)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="rasage">
+                <div class="product-img-box"><img src="image_p5_4.png" alt="Lam Lemon Beauty" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Lames Rasoir Sourcils Lemon Beauty (3pcs)</h3>
+                    <p class="description">Réf: N9-5</p>
+                    <div class="product-bottom"><span class="price">5.40 DT</span><button class="btn-add-cart" onclick="addToCart('Lam Lemon Beauty (N9-5)', 5.40)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="rasage">
+                <div class="product-img-box"><img src="image_p5_5.png" alt="Lam Flamingo" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Lames Flamingo Pliables 3pcs</h3>
+                    <p class="description">Réf: N30-10</p>
+                    <div class="product-bottom"><span class="price">2.40 DT</span><button class="btn-add-cart" onclick="addToCart('Lam Flamingo 3pcs (N30-10)', 2.40)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="rasage">
+                <div class="product-img-box"><img src="image_p5_7.jpg" alt="Lam Tinaiye" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Rasoirs Sourcils Tinaiye 3pcs</h3>
+                    <p class="description">Réf: N30-11</p>
+                    <div class="product-bottom"><span class="price">1.68 DT</span><button class="btn-add-cart" onclick="addToCart('Lam Tinaiye 3pcs (N30-11)', 1.68)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="rasage">
+                <div class="product-img-box"><img src="image_p6_1.png" alt="Boite Lames Rasoir" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Bocal Lames Rasoir Visage 60pcs</h3>
+                    <p class="description">Réf: N30-12</p>
+                    <div class="product-bottom"><span class="price">33.54 DT</span><button class="btn-add-cart" onclick="addToCart('Lam 60pcs (N30-12)', 33.54)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="rasage">
+                <div class="product-img-box"><img src="image_p6_2.png" alt="Gememe Rasoirs 24pcs" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Gememe Rasoirs 3 Lames 24pcs</h3>
+                    <p class="description">Réf: N25-8</p>
+                    <div class="product-bottom"><span class="price">31.20 DT</span><button class="btn-add-cart" onclick="addToCart('Gememe 24pcs (N25-8)', 31.20)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="rasage">
+                <div class="product-img-box"><img src="image_p6_3.jpg" alt="Gememe Rasoirs 4pcs" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Gememe Rasoirs 3 Lames 4pcs</h3>
+                    <p class="description">Réf: N25-10</p>
+                    <div class="product-bottom"><span class="price">7.80 DT</span><button class="btn-add-cart" onclick="addToCart('Gememe 4pcs (N25-10)', 7.80)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="rasage">
+                <div class="product-img-box"><img src="image_p6_4.jpg" alt="PearlMax Simply 5pcs" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>PearlMax Simply 3 Lames 5pcs</h3>
+                    <p class="description">Réf: N26-3</p>
+                    <div class="product-bottom"><span class="price">7.20 DT</span><button class="btn-add-cart" onclick="addToCart('PearlMax 5pcs (N26-3)', 7.20)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="rasage">
+                <div class="product-img-box"><img src="image_p6_5.png" alt="PearlMax 10pcs" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>PearlMax Rasoirs 3 Lames 10pcs</h3>
+                    <p class="description">Réf: N26-4</p>
+                    <div class="product-bottom"><span class="price">11.70 DT</span><button class="btn-add-cart" onclick="addToCart('PearlMax 10pcs (N26-4)', 11.70)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <!-- PAGE 7: Chauffe-Cire & Rasoirs Premium -->
+            <div class="product-card" data-category="rasage">
+                <div class="product-img-box"><img src="image_p7_1.jpg" alt="PearlMax 12pcs" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>PearlMax Rasoirs Comfort 12pcs</h3>
+                    <p class="description">Réf: N26-6</p>
+                    <div class="product-bottom"><span class="price">19.50 DT</span><button class="btn-add-cart" onclick="addToCart('PearlMax 12pcs (N26-6)', 19.50)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="rasage">
+                <div class="product-img-box"><img src="image_p7_2.png" alt="PearlMax 6+2 Free" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>PearlMax 3 Lames (6+2 Gratuit)</h3>
+                    <p class="description">Réf: N26-9</p>
+                    <div class="product-bottom"><span class="price">12.48 DT</span><button class="btn-add-cart" onclick="addToCart('PearlMax 8pcs (N26-9)', 12.48)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="rasage">
+                <div class="product-img-box"><img src="image_p7_3.jpg" alt="Chauffe Cire Roll-on" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Appareil Chauffe-Cire Roll-On</h3>
+                    <p class="description">Réf: N20-20</p>
+                    <div class="product-bottom"><span class="price">17.16 DT</span><button class="btn-add-cart" onclick="addToCart('Depilatory Heater (N20-20)', 17.16)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="rasage">
+                <div class="product-img-box"><img src="image_p7_4.jpg" alt="Pro Wax 100" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Appareil Cire Pro Wax 100</h3>
+                    <p class="description">Réf: N20-3</p>
+                    <div class="product-bottom"><span class="price">30.60 DT</span><button class="btn-add-cart" onclick="addToCart('Pro Wax 100 (N20-3)', 30.60)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <!-- PAGE 8 & 9: Mains, Pieds & Limes -->
+            <div class="product-card" data-category="ongles">
+                <div class="product-img-box"><img src="image_p7_5.jpg" alt="Rappe Pieds PM" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Râpe à Pieds Manche Ergonomique</h3>
+                    <p class="description">Réf: N4-5</p>
+                    <div class="product-bottom"><span class="price">6.24 DT</span><button class="btn-add-cart" onclick="addToCart('Rappe Pieds PM (N4-5)', 6.24)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="ongles">
+                <div class="product-img-box"><img src="image_p8_1.png" alt="Rappe Pieds ZZ White" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Râpe à Pieds Professionnelle Blanche</h3>
+                    <p class="description">Réf: N6-1</p>
+                    <div class="product-bottom"><span class="price">7.02 DT</span><button class="btn-add-cart" onclick="addToCart('Rappe Pieds (N6-1)', 7.02)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="ongles">
+                <div class="product-img-box"><img src="image_p8_2.png" alt="Rappe Pieds ZZ Pink" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Râpe à Pieds Professionnelle Rose</h3>
+                    <p class="description">Réf: N6-2</p>
+                    <div class="product-bottom"><span class="price">6.24 DT</span><button class="btn-add-cart" onclick="addToCart('Rappe Pieds (N6-2)', 6.24)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="ongles">
+                <div class="product-img-box"><img src="image_p8_3.png" alt="Kit Pédicure 3pcs" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Kit Pédicure Râpe + Coupe Ongles 3pcs</h3>
+                    <p class="description">Réf: N9-8</p>
+                    <div class="product-bottom"><span class="price">10.92 DT</span><button class="btn-add-cart" onclick="addToCart('Kit Pedicure 3pcs (N9-8)', 10.92)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="ongles">
+                <div class="product-img-box"><img src="image_p8_4.png" alt="Limes Métal 12pcs" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Limes à Ongles Métalliques 12pcs</h3>
+                    <p class="description">Réf: N5-11</p>
+                    <div class="product-bottom"><span class="price">20.28 DT</span><button class="btn-add-cart" onclick="addToCart('Limes Metal 12pcs (N5-11)', 20.28)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="ongles">
+                <div class="product-img-box"><img src="image_p8_5.jpg" alt="Limes Banane 25pcs" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Limes à Ongles Banane Noires 25pcs</h3>
+                    <p class="description">Réf: N10-2</p>
+                    <div class="product-bottom"><span class="price">26.52 DT</span><button class="btn-add-cart" onclick="addToCart('Limes Banane 25pcs (N10-2)', 26.52)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <!-- PAGE 9 & 10: Pinceaux de Maquillage -->
+            <div class="product-card" data-category="pinceaux">
+                <div class="product-img-box"><img src="image_p9_1.jpg" alt="Natural Elegance Kit" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Kit Pinceaux Natural Elegance 5pcs</h3>
+                    <p class="description">Réf: N9-17</p>
+                    <div class="product-bottom"><span class="price">18.72 DT</span><button class="btn-add-cart" onclick="addToCart('Pinceaux Natural Elegance (N9-17)', 18.72)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="pinceaux">
+                <div class="product-img-box"><img src="image_p9_2.jpg" alt="Set Pinceaux 7pcs + Blenders" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Coffret Pinceaux & Éponges 7pcs</h3>
+                    <p class="description">Réf: N30-13</p>
+                    <div class="product-bottom"><span class="price">24.96 DT</span><button class="btn-add-cart" onclick="addToCart('Pinceaux Set 7pcs (N30-13)', 24.96)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="pinceaux">
+                <div class="product-img-box"><img src="image_p9_3.png" alt="Professional Face Eye Brush Set" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Set Pinceaux Professional Face & Eye 6pcs</h3>
+                    <p class="description">Réf: N30-14</p>
+                    <div class="product-bottom"><span class="price">22.62 DT</span><button class="btn-add-cart" onclick="addToCart('Pinceaux Professional 6pcs (N30-14)', 22.62)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="pinceaux">
+                <div class="product-img-box"><img src="image_p9_4.jpg" alt="Real Techniques Artist Essentials" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Real Techniques Artist Essentials 5pcs</h3>
+                    <p class="description">Réf: N30-8</p>
+                    <div class="product-bottom"><span class="price">21.84 DT</span><button class="btn-add-cart" onclick="addToCart('Real Techniques 5pcs (N30-8)', 21.84)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="pinceaux">
+                <div class="product-img-box"><img src="image_p9_5.jpg" alt="Real Techniques Face Essentials" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Real Techniques Face Essentials 5pcs</h3>
+                    <p class="description">Réf: N30-9</p>
+                    <div class="product-bottom"><span class="price">24.18 DT</span><button class="btn-add-cart" onclick="addToCart('Real Techniques 5pcs (N30-9)', 24.18)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <!-- PAGE 10 & 11: Brosses à Cheveux -->
+            <div class="product-card" data-category="cheveux">
+                <div class="product-img-box"><img src="image_p10_1.jpg" alt="Brosse Massage Sweet Beauty" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Brosse Shiatsu Massage Shampooing</h3>
+                    <p class="description">Réf: N4-2</p>
+                    <div class="product-bottom"><span class="price">9.36 DT</span><button class="btn-add-cart" onclick="addToCart('Brosse Massage (N4-2)', 9.36)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="cheveux">
+                <div class="product-img-box"><img src="image_p10_2.png" alt="Brosse Coeur Sweetheart" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Brosse à Cheveux Forme Cœur</h3>
+                    <p class="description">Réf: N5-2</p>
+                    <div class="product-bottom"><span class="price">6.24 DT</span><button class="btn-add-cart" onclick="addToCart('Brosse Coeur (N5-2)', 6.24)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="cheveux">
+                <div class="product-img-box"><img src="image_p10_3.png" alt="Brosse Cheveux Bois Pinceau" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Brosse Démêlante Carrée Manche Bois</h3>
+                    <p class="description">Réf: N6-10</p>
+                    <div class="product-bottom"><span class="price">11.22 DT</span><button class="btn-add-cart" onclick="addToCart('Brosse Cheveux (N6-10)', 11.22)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="cheveux">
+                <div class="product-img-box"><img src="image_p10_4.png" alt="Brosse Cheveux Ovale Bois" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Brosse Démêlante Ovale Manche Bois</h3>
+                    <p class="description">Réf: N6-11</p>
+                    <div class="product-bottom"><span class="price">10.92 DT</span><button class="btn-add-cart" onclick="addToCart('Brosse Cheveux (N6-11)', 10.92)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="cheveux">
+                <div class="product-img-box"><img src="image_p11_1.png" alt="Brosse Aérée Violette/Rose" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Brosse Souple Aérée Séchage Rapide</h3>
+                    <p class="description">Réf: N6-18</p>
+                    <div class="product-bottom"><span class="price">11.76 DT</span><button class="btn-add-cart" onclick="addToCart('Brosse Aeree (N6-18)', 11.76)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="cheveux">
+                <div class="product-img-box"><img src="image_p11_2.png" alt="Brosse Pneumatique Noire" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Brosse Pneumatique Noire Élégance</h3>
+                    <p class="description">Réf: N6-17</p>
+                    <div class="product-bottom"><span class="price">10.92 DT</span><button class="btn-add-cart" onclick="addToCart('Brosse Noire (N6-17)', 10.92)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="cheveux">
+                <div class="product-img-box"><img src="image_p11_3.png" alt="Brosse Squelette Mini" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Brosse Squelette Mini Compacte</h3>
+                    <p class="description">Réf: N30-15</p>
+                    <div class="product-bottom"><span class="price">7.02 DT</span><button class="btn-add-cart" onclick="addToCart('Brosse Mini (N30-15)', 7.02)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+            <div class="product-card" data-category="cheveux">
+                <div class="product-img-box"><img src="image_p11_4.png" alt="Brosse Bouclage Bleue" onclick="zoomImage(this)"></div>
+                <div class="product-info">
+                    <h3>Brosse de Bouclage & Définition</h3>
+                    <p class="description">Réf: N31-1</p>
+                    <div class="product-bottom"><span class="price">13.32 DT</span><button class="btn-add-cart" onclick="addToCart('Brosse Bouclage (N31-1)', 13.32)">Ajouter au panier</button></div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Modal Zoom Photo -->
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="close-modal">&times;</span>
+        <img class="modal-content" id="imgModalSrc">
+    </div>
+
+    <!-- Tiroir / Drawer du Panier -->
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="cart-header">
+            <h3>Mon Panier</h3>
+            <span class="close-cart" onclick="toggleCart()">&times;</span>
+        </div>
+
+        <div class="cart-body" id="cartItems">
+            <p class="empty-cart-msg">Votre panier est vide.</p>
+        </div>
+
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total :</span>
+                <span id="cartTotal">0.00 TND</span>
+            </div>
+            <a href="#checkout-section" class="btn-checkout" onclick="showCheckoutSection()">Commander maintenant</a>
+        </div>
+    </div>
+
+    <!-- Section Formulaire de Commande -->
+    <section class="checkout-section" id="checkout-section">
+        <div class="form-container">
+            <h2>Finaliser ma commande</h2>
+            <p class="form-subtitle">Paiement à la livraison (Cash on Delivery)</p>
+
+            <form action="https://formspree.io/f/mppqgllp" method="POST" id="orderForm">
+                <div class="form-group">
+                    <label>Nom & Prénom *</label>
+                    <input type="text" name="Nom_Prenom" placeholder="Ex: Mariem Ben Ali" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Téléphone *</label>
+                    <input type="tel" name="Telephone" placeholder="Ex: 22 123 456" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Adresse complète de livraison *</label>
+                    <textarea name="Adresse" rows="3" placeholder="Gouvernorat, Ville, Rue..." required></textarea>
+                </div>
+
+                <input type="hidden" name="Articles_Commandes" id="hiddenCartData">
+                <input type="hidden" name="Total_A_Payer" id="hiddenCartTotal">
+
+                <div class="order-summary-box">
+                    <h4>Résumé de vos articles :</h4>
+                    <div id="formCartSummary">Aucun article sélectionné.</div>
+                    <div class="summary-total">Total à payer : <strong id="formTotalAmount">0.00 TND</strong></div>
+                </div>
+
+                <button type="submit" class="btn-submit">Confirmer la Commande</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 A&E cosmetics — Haute Cosmétique</p>
+    </footer>
+
+    <!-- Script JavaScript -->
+    <script>
+        let cart = [];
+
+        function toggleCart() {
+            document.getElementById('cartDrawer').classList.toggle('active');
+            document.getElementById('cartOverlay').classList.toggle('active');
+        }
+
+        function showCheckoutSection() {
+            toggleCart();
+            const checkoutSec = document.getElementById('checkout-section');
+            checkoutSec.classList.add('active');
+            checkoutSec.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function addToCart(title, price) {
+            let existingItem = cart.find(item => item.title === title);
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({ title: title, price: price, quantity: 1 });
+            }
+            updateCart();
+            toggleCart(); 
+        }
+
+        function changeQuantity(title, delta) {
+            let item = cart.find(item => item.title === title);
+            if (item) {
+                item.quantity += delta;
+                if (item.quantity <= 0) {
+                    cart = cart.filter(i => i.title !== title);
+                }
+            }
+            updateCart();
+        }
+
+        function updateCart() {
+            const cartItemsContainer = document.getElementById('cartItems');
+            const cartTotal = document.getElementById('cartTotal');
+            const formCartSummary = document.getElementById('formCartSummary');
+            const formTotalAmount = document.getElementById('formTotalAmount');
+            const hiddenCartData = document.getElementById('hiddenCartData');
+            const hiddenCartTotal = document.getElementById('hiddenCartTotal');
+
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<p class="empty-cart-msg">Votre panier est vide.</p>';
+                document.getElementById('cart-count').innerText = 0;
+                cartTotal.innerText = '0.00 TND';
+                formCartSummary.innerHTML = 'Aucun article sélectionné.';
+                formTotalAmount.innerText = '0.00 TND';
+                hiddenCartData.value = '';
+                hiddenCartTotal.value = '0.00 TND';
+                return;
+            }
+
+            let total = 0;
+            let totalCount = 0;
+            let itemsHTML = '';
+            let summaryHTML = '<ul>';
+            let hiddenDataString = '';
+
+            cart.forEach(item => {
+                let itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                totalCount += item.quantity;
+
+                itemsHTML += `
+                    <div class="cart-item">
+                        <div>
+                            <h4>${item.title}</h4>
+                            <p>${item.price.toFixed(2)} DT x ${item.quantity} = <strong>${itemTotal.toFixed(2)} DT</strong></p>
+                        </div>
+                        <div class="qty-btn-group">
+                            <button onclick="changeQuantity('${item.title}', -1)">-</button>
+                            <span>${item.quantity}</span>
+                            <button onclick="changeQuantity('${item.title}', 1)">+</button>
+                        </div>
+                    </div>
+                `;
+
+                summaryHTML += `<li>${item.title} (x${item.quantity}) - ${itemTotal.toFixed(2)} DT</li>`;
+                hiddenDataString += `${item.title} (x${item.quantity}) | `;
+            });
+
+            summaryHTML += '</ul>';
+
+            cartItemsContainer.innerHTML = itemsHTML;
+            document.getElementById('cart-count').innerText = totalCount;
+            cartTotal.innerText = total.toFixed(2) + ' DT';
+            formCartSummary.innerHTML = summaryHTML;
+            formTotalAmount.innerText = total.toFixed(2) + ' DT';
+            hiddenCartData.value = hiddenDataString;
+            hiddenCartTotal.value = total.toFixed(2) + ' DT';
+        }
+
+        /* Recherche instantanée */
+        function filterProducts() {
+            let input = document.getElementById('searchInput').value.toLowerCase();
+            let cards = document.getElementsByClassName('product-card');
+
+            for (let i = 0; i < cards.length; i++) {
+                let title = cards[i].querySelector('h3').innerText.toLowerCase();
+                let desc = cards[i].querySelector('.description').innerText.toLowerCase();
+                if (title.includes(input) || desc.includes(input)) {
+                    cards[i].style.display = "";
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+        }
+
+        /* Filtrage par catégories */
+        function filterCategory(category, btn) {
+            let cards = document.getElementsByClassName('product-card');
+            let buttons = document.getElementsByClassName('filter-btn');
+
+            for (let b of buttons) {
+                b.classList.remove('active');
+            }
+            btn.classList.add('active');
+
+            for (let i = 0; i < cards.length; i++) {
+                let cardCategory = cards[i].getAttribute('data-category');
+                if (category === 'all' || cardCategory === category) {
+                    cards[i].style.display = "";
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+        }
+
+        /* Fonctions pour le Zoom des images */
+        function zoomImage(element) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('imgModalSrc');
+            modal.classList.add('active');
+            modalImg.src = element.src;
+        }
+
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('active');
+        }
+    </script>
+</body>
+</html>
